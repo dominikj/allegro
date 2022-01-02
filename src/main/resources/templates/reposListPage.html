@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+
+<div th:if="${not #lists.isEmpty(repos)}">
+    <div>Repozytoria użytkownika: <b th:text="${repos.get(0).ownerLogin}"></b> <br/> <a href="/">Wróć do wyszukiwarki >>></a></div>
+    <table border="1">
+        <tr>
+            <th>Nazwa (liczba gwiazdek)</th>
+            <th>Opis</th>
+        </tr>
+        <tr th:each="repo: ${repos}">
+            <td th:text="|${repo.name} (${repo.stars})|">></td>
+            <td><i th:text="${repo.description}"></i></td>
+        </tr>
+    </table>
+</div>

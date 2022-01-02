@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import pl.ale.dto.RepositoryDto;
 import pl.ale.dto.UserDto;
 import pl.ale.enums.UserType;
 import pl.ale.rest.response.RepositoryItem;
@@ -28,13 +29,13 @@ public class DefaultGithubService implements GithubService {
     }
 
     @Override
-    public List<RepositoryItem> getRepositoriesForPersonalUser(String username) {
+    public List<RepositoryDto> getRepositoriesForPersonalUser(String username) {
         return getRepositories(username, false);
 
     }
 
     @Override
-    public List<RepositoryItem> getRepositoriesForOrganization(String username) {
+    public List<RepositoryDto> getRepositoriesForOrganization(String username) {
         return getRepositories(username, true);
     }
 
@@ -46,7 +47,7 @@ public class DefaultGithubService implements GithubService {
         return response.getBody().getItems().stream().map(this::buildUserDto).collect(Collectors.toList());
     }
 
-    private List<RepositoryItem> getRepositories(String username, boolean isOrganization) {
+    private List<RepositoryDto> getRepositories(String username, boolean isOrganization) {
 
         String url;
         if (isOrganization) {
@@ -58,7 +59,7 @@ public class DefaultGithubService implements GithubService {
         ResponseEntity<RepositoryItem[]> response =
                 restTemplate.getForEntity(url.replace(USER_VAR, username), RepositoryItem[].class);
 
-        return Arrays.asList(response.getBody());
+        return Arrays.stream(response.getBody()).map(this::buildRepositoryDto).collect(Collectors.toList());
 
     }
 
@@ -68,6 +69,18 @@ public class DefaultGithubService implements GithubService {
 
         dto.setLogin(item.getLogin());
         dto.setOrganization(UserType.Organization.equals(item.getType()));
+
+        return dto;
+    }
+
+    private RepositoryDto buildRepositoryDto(RepositoryItem item) {
+
+        RepositoryDto dto = new RepositoryDto();
+
+        dto.setDescription(item.getDescription());
+        dto.setName(item.getName());
+        dto.setStars(item.getWatchers_count());
+        dto.setOwnerLogin(item.getOwner().getLogin());
 
         return dto;
     }

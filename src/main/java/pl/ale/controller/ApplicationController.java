@@ -40,11 +40,19 @@ public class ApplicationController {
         return "searchPage";
     }
 
-    @GetMapping("/get-repos/${user}")
+    @GetMapping("/get-repos/{user}")
     public String getRepos(@PathVariable String user, @RequestParam boolean isOrganization, Model model) {
 
-        model.addAttribute("repos", githubService.getRepositoriesForPersonalUser(user));
+        if (user != null || !user.isEmpty()) {
 
-        return "reposList";
+            if (isOrganization) {
+                model.addAttribute("repos", githubService.getRepositoriesForOrganization(user));
+
+            } else {
+                model.addAttribute("repos", githubService.getRepositoriesForPersonalUser(user));
+            }
+        }
+
+        return "reposListPage";
     }
 }

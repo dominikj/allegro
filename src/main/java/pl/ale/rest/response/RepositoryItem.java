@@ -11,6 +11,15 @@ public class RepositoryItem {
     private String name;
     private int watchers_count;
     private String description;
+    private Owner owner;
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
 
     public String getDescription() {
         return description;

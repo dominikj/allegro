@@ -1,7 +1,7 @@
 package pl.ale.service;
 
+import pl.ale.dto.RepositoryDto;
 import pl.ale.dto.UserDto;
-import pl.ale.rest.response.RepositoryItem;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface GithubService {
 
-    List<RepositoryItem> getRepositoriesForPersonalUser(String username);
+    List<RepositoryDto> getRepositoriesForPersonalUser(String username);
 
-    List<RepositoryItem> getRepositoriesForOrganization(String username);
+    List<RepositoryDto> getRepositoriesForOrganization(String username);
 
     List<UserDto> searchUsers(String query);
 
