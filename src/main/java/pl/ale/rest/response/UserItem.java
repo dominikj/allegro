@@ -1,6 +1,7 @@
 package pl.ale.rest.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import pl.ale.enums.UserType;
 
 /**
  * Created by dominik on 02.01.22.
@@ -9,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class UserItem {
 
     private String login;
-    private String repos_url;
+    private UserType type;
 
     public String getLogin() {
         return login;
@@ -19,11 +20,11 @@ public class UserItem {
         this.login = login;
     }
 
-    public String getRepos_url() {
-        return repos_url;
+    public UserType getType() {
+        return type;
     }
 
-    public void setRepos_url(String repos_url) {
-        this.repos_url = repos_url;
+    public void setType(String type) {
+        this.type = UserType.valueOf(type);
     }
 }

@@ -4,8 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.ale.rest.service.GithubService;
+import pl.ale.service.GithubService;
+
+import static pl.ale.constant.Constants.GITHUB_MAX_QUERY_SIZE;
 
 /**
  * Created by dominik on 01.01.22.
@@ -24,13 +27,21 @@ public class ApplicationController {
     public String searchUsers(@RequestParam(required = false) String query, Model model) {
 
         if (query != null) {
-            model.addAttribute("userList", githubService.searchUsers(query));
+
+            String trimmedQuery = query.trim();
+
+            if (trimmedQuery.isEmpty() || trimmedQuery.length() > GITHUB_MAX_QUERY_SIZE) {
+                model.addAttribute("isEmptyOrTooLongQuery", true);
+
+            } else {
+                model.addAttribute("userList", githubService.searchUsers(trimmedQuery));
+            }
         }
         return "searchPage";
     }
 
-    @GetMapping("/get-repos")
-    public String getRepos(@RequestParam String user, Model model) {
+    @GetMapping("/get-repos/${user}")
+    public String getRepos(@PathVariable String user, @RequestParam boolean isOrganization, Model model) {
 
         model.addAttribute("repos", githubService.getRepositoriesForPersonalUser(user));
 

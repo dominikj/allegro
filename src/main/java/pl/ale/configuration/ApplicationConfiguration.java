@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import pl.ale.rest.service.GithubService;
+import pl.ale.service.GithubService;
 
 /**
  * Created by dominik on 01.01.22.

@@ -6,10 +6,11 @@
     <input type="text" id="user" name="query"><br>
     <input type="submit" value="Szukaj">
 </form>
-
-<div th:if="${not #lists.isEmpty(userList)}"> Wyniki wyszukiwania:</div>
-<table border ="1">
-    <tr th:each="user: ${userList}">
-        <td th:text="${user.login}"/>
-    </tr>
-</table>
+<div th:if="${isEmptyOrTooLongQuery}"><b style="color:red"> Wyszukiwana nazwa nie może być pusta lub być dłuższa niż 256 znaków</b></div>
+<div th:if="${not #lists.isEmpty(userList)}"> Wyniki wyszukiwania:
+    <table border="1">
+        <tr th:each="user: ${userList}">
+            <td><a th:text="${user.login}" th:href="|/get-repos/${user.login}?isOrganization=${user.isOrganization}|"/></td>
+        </tr>
+    </table>
+</div>
