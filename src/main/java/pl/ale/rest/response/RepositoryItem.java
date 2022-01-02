@@ -1,4 +1,4 @@
-package pl.ale.response;
+package pl.ale.rest.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -10,6 +10,15 @@ public class RepositoryItem {
 
     private String name;
     private int watchers_count;
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getName() {
         return name;

@@ -1,0 +1,15 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
+
+<form action="/" method="get">
+    <label for="user">Wyszukaj użytkownika:</label><br>
+    <input type="text" id="user" name="query"><br>
+    <input type="submit" value="Szukaj">
+</form>
+
+<div th:if="${not #lists.isEmpty(userList)}"> Wyniki wyszukiwania:</div>
+<table border ="1">
+    <tr th:each="user: ${userList}">
+        <td th:text="${user.login}"/>
+    </tr>
+</table>
