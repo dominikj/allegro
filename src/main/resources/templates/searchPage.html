@@ -6,11 +6,19 @@
     <input type="text" id="user" name="query"><br>
     <input type="submit" value="Szukaj">
 </form>
+
 <div th:if="${isEmptyOrTooLongQuery}"><b style="color:red"> Wyszukiwana nazwa nie może być pusta lub być dłuższa niż 256 znaków</b></div>
-<div th:if="${not #lists.isEmpty(userList)}"> Wyniki wyszukiwania:
-    <table border="1">
-        <tr th:each="user: ${userList}">
-            <td><a th:text="${user.login}" th:href="|/get-repos/${user.login}?isOrganization=${user.isOrganization}|"/></td>
-        </tr>
-    </table>
+
+<div th:unless="${isEmptyOrTooLongQuery}">
+    <div th:if="${isTooManyResults}"><i> Znaleziono ponad 100 wyników, spróbuj doprecyzować wyszukiwaną frazę</i></div>
+
+    <div th:if="${not #lists.isEmpty(userList)}"> Wyniki wyszukiwania:
+        <table border="1">
+            <tr th:each="user: ${userList}">
+                <td><a th:text="${user.login}" th:href="|/get-repos/${user.login}?isOrganization=${user.isOrganization}|"/></td>
+            </tr>
+        </table>
+    </div>
+
+    <div th:if="${#lists.isEmpty(userList)}">Brak wyników wyszukiwania</div>
 </div>

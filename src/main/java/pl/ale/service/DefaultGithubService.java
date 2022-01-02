@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.ale.dto.RepositoryDto;
 import pl.ale.dto.UserDto;
+import pl.ale.dto.UserListDto;
 import pl.ale.enums.UserType;
 import pl.ale.rest.response.RepositoryItem;
 import pl.ale.rest.response.UserItem;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static pl.ale.constant.Constants.GITHUB_MAX_SEARCH_RESULTS;
 import static pl.ale.constant.Constants.githubUrls.*;
 
 @Service
@@ -40,11 +42,16 @@ public class DefaultGithubService implements GithubService {
     }
 
     @Override
-    public List<UserDto> searchUsers(String query) {
+    public UserListDto searchUsers(String query) {
 
         ResponseEntity<UserList> response = restTemplate.getForEntity(SEARCH_USER_URL + query, UserList.class);
 
-        return response.getBody().getItems().stream().map(this::buildUserDto).collect(Collectors.toList());
+        UserListDto userList = new UserListDto();
+
+        userList.setUsers(response.getBody().getItems().stream().map(this::buildUserDto).collect(Collectors.toList()));
+        userList.setTooManyResults(response.getBody().getTotal_count() > GITHUB_MAX_SEARCH_RESULTS);
+
+        return userList;
     }
 
     private List<RepositoryDto> getRepositories(String username, boolean isOrganization) {

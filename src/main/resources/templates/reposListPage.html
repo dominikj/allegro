@@ -14,3 +14,7 @@
         </tr>
     </table>
 </div>
+
+<div th:if="${#lists.isEmpty(repos)}">
+    Brak repozytoriów. <br/> <a href="/">Wróć do wyszukiwarki >>></a>
+</div>

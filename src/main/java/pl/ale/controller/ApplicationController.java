@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.ale.dto.UserListDto;
 import pl.ale.service.GithubService;
 
 import static pl.ale.constant.Constants.GITHUB_MAX_QUERY_SIZE;
@@ -34,7 +35,10 @@ public class ApplicationController {
                 model.addAttribute("isEmptyOrTooLongQuery", true);
 
             } else {
-                model.addAttribute("userList", githubService.searchUsers(trimmedQuery));
+                UserListDto usersList = githubService.searchUsers(trimmedQuery);
+
+                model.addAttribute("userList", usersList.getUsers());
+                model.addAttribute("isTooManyResults", usersList.isTooManyResults());
             }
         }
         return "searchPage";
