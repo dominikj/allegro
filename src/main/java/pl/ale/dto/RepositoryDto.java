@@ -8,7 +8,6 @@ public class RepositoryDto {
     private String name;
     private int stars;
     private String description;
-    private String ownerLogin;
 
     public String getName() {
         return name;
@@ -32,13 +31,5 @@ public class RepositoryDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getOwnerLogin() {
-        return ownerLogin;
-    }
-
-    public void setOwnerLogin(String ownerLogin) {
-        this.ownerLogin = ownerLogin;
     }
 }

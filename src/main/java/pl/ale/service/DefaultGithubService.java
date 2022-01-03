@@ -5,18 +5,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.ale.dto.RepositoryDto;
+import pl.ale.dto.RepositoryListDto;
 import pl.ale.dto.UserDto;
 import pl.ale.dto.UserListDto;
 import pl.ale.enums.UserType;
 import pl.ale.rest.response.RepositoryItem;
+import pl.ale.rest.response.UserData;
 import pl.ale.rest.response.UserItem;
 import pl.ale.rest.response.UserList;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
-import static pl.ale.constant.Constants.GITHUB_MAX_SEARCH_RESULTS;
+import static pl.ale.constant.Constants.GITHUB_DEFAULT_SEARCH_RESULTS_PER_PAGE;
+import static pl.ale.constant.Constants.GITHUB_MAX_SEARCH_RESULTS_PER_PAGE;
 import static pl.ale.constant.Constants.githubUrls.*;
 
 @Service
@@ -31,14 +33,14 @@ public class DefaultGithubService implements GithubService {
     }
 
     @Override
-    public List<RepositoryDto> getRepositoriesForPersonalUser(String username) {
-        return getRepositories(username, false);
+    public RepositoryListDto getRepositoriesForPersonalUser(String username, int page) {
+        return getRepositories(username, false, page);
 
     }
 
     @Override
-    public List<RepositoryDto> getRepositoriesForOrganization(String username) {
-        return getRepositories(username, true);
+    public RepositoryListDto getRepositoriesForOrganization(String username, int page) {
+        return getRepositories(username, true, page);
     }
 
     @Override
@@ -49,25 +51,55 @@ public class DefaultGithubService implements GithubService {
         UserListDto userList = new UserListDto();
 
         userList.setUsers(response.getBody().getItems().stream().map(this::buildUserDto).collect(Collectors.toList()));
-        userList.setTooManyResults(response.getBody().getTotal_count() > GITHUB_MAX_SEARCH_RESULTS);
+        userList.setTooManyResults(response.getBody().getTotal_count() > GITHUB_MAX_SEARCH_RESULTS_PER_PAGE);
 
         return userList;
     }
 
-    private List<RepositoryDto> getRepositories(String username, boolean isOrganization) {
+    private UserData getUserData(String username) {
+
+        return restTemplate.getForEntity(String.format(GET_USER_DATA_URL, username), UserData.class).getBody();
+
+    }
+
+    private RepositoryListDto getRepositories(String username, boolean isOrganization, int page) {
 
         String url;
         if (isOrganization) {
-            url = REPOS_ORG_URL;
+
+            url = String.format(REPOS_ORG_URL, username, GITHUB_DEFAULT_SEARCH_RESULTS_PER_PAGE, page);
+
         } else {
-            url = REPOS_PERSONAL_USER_URL;
+
+            url = String.format(REPOS_PERSONAL_USER_URL, username, GITHUB_DEFAULT_SEARCH_RESULTS_PER_PAGE, page);
+
         }
 
-        ResponseEntity<RepositoryItem[]> response =
-                restTemplate.getForEntity(url.replace(USER_VAR, username), RepositoryItem[].class);
+        ResponseEntity<RepositoryItem[]> repositories = restTemplate.getForEntity(url, RepositoryItem[].class);
 
-        return Arrays.stream(response.getBody()).map(this::buildRepositoryDto).collect(Collectors.toList());
+        UserData userData = getUserData(username);
 
+        return buildRepositoryListDto(repositories.getBody(), userData, page);
+
+    }
+
+    private RepositoryListDto buildRepositoryListDto(RepositoryItem[] repositories, UserData userData, int page) {
+
+        RepositoryListDto repositoryList = new RepositoryListDto();
+
+        repositoryList.setRepositories(Arrays.stream(repositories).map(this::buildRepositoryDto).collect(Collectors.toList()));
+        repositoryList.setLogin(userData.getLogin());
+        repositoryList.setOrganization(UserType.Organization.equals(userData.getType()));
+        repositoryList.setCurrentPage(page);
+        repositoryList.setNumberOfPages(calculateNumberOfPages(userData.getPublic_repos()));
+
+        return repositoryList;
+
+    }
+
+    private int calculateNumberOfPages(int numberOfRepos) {
+
+        return (int) Math.ceil((double) numberOfRepos / GITHUB_DEFAULT_SEARCH_RESULTS_PER_PAGE);
     }
 
     private UserDto buildUserDto(UserItem item) {
@@ -87,7 +119,6 @@ public class DefaultGithubService implements GithubService {
         dto.setDescription(item.getDescription());
         dto.setName(item.getName());
         dto.setStars(item.getWatchers_count());
-        dto.setOwnerLogin(item.getOwner().getLogin());
 
         return dto;
     }

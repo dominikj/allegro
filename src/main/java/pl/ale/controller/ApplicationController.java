@@ -45,15 +45,17 @@ public class ApplicationController {
     }
 
     @GetMapping("/get-repos/{user}")
-    public String getRepos(@PathVariable String user, @RequestParam boolean isOrganization, Model model) {
+    public String getRepos(@PathVariable String user, @RequestParam boolean isOrganization, @RequestParam int page, Model
+            model) {
 
         if (user != null || !user.isEmpty()) {
 
             if (isOrganization) {
-                model.addAttribute("repos", githubService.getRepositoriesForOrganization(user));
+
+                model.addAttribute("repos", githubService.getRepositoriesForOrganization(user, page));
 
             } else {
-                model.addAttribute("repos", githubService.getRepositoriesForPersonalUser(user));
+                model.addAttribute("repos", githubService.getRepositoriesForPersonalUser(user, page));
             }
         }
 

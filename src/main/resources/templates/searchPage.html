@@ -15,7 +15,7 @@
     <div th:if="${not #lists.isEmpty(userList)}"> Wyniki wyszukiwania:
         <table border="1">
             <tr th:each="user: ${userList}">
-                <td><a th:text="${user.login}" th:href="|/get-repos/${user.login}?isOrganization=${user.isOrganization}|"/></td>
+                <td><a th:text="${user.login}" th:href="|/get-repos/${user.login}?isOrganization=${user.isOrganization}&page=1|"/></td>
             </tr>
         </table>
     </div>

@@ -1,20 +1,25 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.thymeleaf.org ">
 
-<div th:if="${not #lists.isEmpty(repos)}">
-    <div>Repozytoria użytkownika: <b th:text="${repos.get(0).ownerLogin}"></b> <br/> <a href="/">Wróć do wyszukiwarki >>></a></div>
+<div th:if="${not #lists.isEmpty(repos.repositories)}">
+    <div>Repozytoria użytkownika: <b th:text="${repos.login}"></b> <br/> <a href="/">Wróć do wyszukiwarki >>></a></div>
+
+    <div th:text="|Strona: ${repos.currentPage} z ${repos.numberOfPages}|"></div>
+    <a th:if="${repos.currentPage > 1}" th:href="|/get-repos/${repos.login}?isOrganization=${repos.organization}&page=${repos.currentPage -1}|">Poprzednia strona</a>
+    <a  th:if="${repos.currentPage != repos.numberOfPages}" th:href="|/get-repos/${repos.login}?isOrganization=${repos.organization}&page=${repos.currentPage +1}|"> Następna strona</a>
     <table border="1">
         <tr>
             <th>Nazwa (liczba gwiazdek)</th>
             <th>Opis</th>
         </tr>
-        <tr th:each="repo: ${repos}">
+        <tr th:each="repo: ${repos.repositories}">
             <td th:text="|${repo.name} (${repo.stars})|">></td>
             <td><i th:text="${repo.description}"></i></td>
         </tr>
     </table>
+
 </div>
 
-<div th:if="${#lists.isEmpty(repos)}">
+<div th:if="${#lists.isEmpty(repos.repositories)}">
     Brak repozytoriów. <br/> <a href="/">Wróć do wyszukiwarki >>></a>
 </div>
