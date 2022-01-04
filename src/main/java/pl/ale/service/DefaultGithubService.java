@@ -7,8 +7,8 @@ import org.springframework.web.client.RestTemplate;
 import pl.ale.dto.RepositoryDto;
 import pl.ale.dto.RepositoryListDto;
 import pl.ale.enums.UserType;
-import pl.ale.rest.response.RepositoryItem;
-import pl.ale.rest.response.UserData;
+import pl.ale.response.RepositoryItem;
+import pl.ale.response.UserData;
 
 import java.util.Arrays;
 import java.util.HashMap;

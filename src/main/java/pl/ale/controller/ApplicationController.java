@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.ale.dto.RepositoryListDto;
 import pl.ale.service.GithubService;
 
+import static pl.ale.constant.Constants.*;
+
 /**
  * Created by dominik on 01.01.22.
  */
@@ -25,8 +27,10 @@ public class ApplicationController {
     public RepositoryListDto getRepos(@PathVariable String user,
                                       @RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer page) {
 
-        int reposPerPage = pageSize == null ? 30 : pageSize;
-        int currentPage = page == null ? 1 : page;
+        int reposPerPage = pageSize == null ? GITHUB_DEFAULT_PAGE_SIZE : pageSize;
+        reposPerPage = (reposPerPage < MINIMAL_REPOS_PER_PAGE || reposPerPage > GITHUB_MAX_RESULTS_PER_PAGE) ? GITHUB_DEFAULT_PAGE_SIZE : reposPerPage;
+
+        int currentPage = page == null ? GTIHUB_DEFAULT_PAGE : page;
 
         return githubService.getRepositories(user, reposPerPage, currentPage);
     }

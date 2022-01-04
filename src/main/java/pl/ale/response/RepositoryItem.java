@@ -1,4 +1,4 @@
-package pl.ale.rest.response;
+package pl.ale.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

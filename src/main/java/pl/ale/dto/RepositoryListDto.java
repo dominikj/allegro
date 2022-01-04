@@ -10,6 +10,8 @@ public class RepositoryListDto {
     private int currentPage;
     private int numberOfPages;
     private String user;
+    private int totalNumberOfStars;
+
     private List<RepositoryDto> repositories;
 
     public int getTotalNumberOfStars() {
@@ -19,8 +21,6 @@ public class RepositoryListDto {
     public void setTotalNumberOfStars(int totalNumberOfStars) {
         this.totalNumberOfStars = totalNumberOfStars;
     }
-
-    private int totalNumberOfStars;
 
     public String getUser() {
         return user;
