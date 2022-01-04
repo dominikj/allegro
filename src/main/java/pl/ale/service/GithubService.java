@@ -1,7 +1,7 @@
 package pl.ale.service;
 
 import pl.ale.dto.RepositoryListDto;
-import pl.ale.dto.UserListDto;
+import pl.ale.rest.response.UserData;
 
 import java.util.Map;
 
@@ -11,14 +11,10 @@ import java.util.Map;
 
 public interface GithubService {
 
-    RepositoryListDto getRepositoriesForPersonalUser(String username, int page);
+    RepositoryListDto getRepositories(String username, int pageSize, int page);
 
-    RepositoryListDto getRepositoriesForOrganization(String username, int page);
+     int getTotalNumberOfStars(UserData userData);
 
-    int getTotalNumberOfStars(String username);
-
-    Map<String, Long> getRepositoryLanguages(String username, String repository);
-
-    UserListDto searchUsers(String query);
+    Map<String, Integer> getRepositoryLanguages(String username, String repository);
 
 }

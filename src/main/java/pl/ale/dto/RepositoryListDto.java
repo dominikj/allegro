@@ -7,11 +7,10 @@ import java.util.List;
  */
 public class RepositoryListDto {
 
-    private List<RepositoryDto> repositories;
     private int currentPage;
     private int numberOfPages;
-    private String login;
-    private boolean organization;
+    private String user;
+    private List<RepositoryDto> repositories;
 
     public int getTotalNumberOfStars() {
         return totalNumberOfStars;
@@ -23,12 +22,12 @@ public class RepositoryListDto {
 
     private int totalNumberOfStars;
 
-    public String getLogin() {
-        return login;
+    public String getUser() {
+        return user;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setUser(String user) {
+        this.user = user;
     }
 
 
@@ -56,11 +55,4 @@ public class RepositoryListDto {
         this.numberOfPages = numberOfPages;
     }
 
-    public boolean isOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(boolean organization) {
-        this.organization = organization;
-    }
 }

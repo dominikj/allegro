@@ -10,13 +10,13 @@ public class RepositoryDto {
     private String name;
     private int stars;
     private String description;
-    private Map<String, Long> languages;
+    private Map<String, Integer> languages;
 
-    public Map<String, Long> getLanguages() {
+    public Map<String, Integer> getLanguages() {
         return languages;
     }
 
-    public void setLanguages(Map<String, Long> languages) {
+    public void setLanguages(Map<String, Integer> languages) {
         this.languages = languages;
     }
 

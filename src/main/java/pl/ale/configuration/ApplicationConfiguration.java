@@ -8,7 +8,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pl.ale.service.GithubService;
 
 /**
@@ -16,28 +15,26 @@ import pl.ale.service.GithubService;
  */
 @Configuration
 @EnableCaching
-public class ApplicationConfiguration implements WebMvcConfigurer {
+public class ApplicationConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GithubService.class);
 
-    @Value("${github.username}")
-    private String githubUsername;
+    @Value("${github.personalToken}")
+    private String personalToken;
 
-    @Value("${github.password}")
-    private String githubPassword;
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
 
-        if (isCredentialsFilled()) {
-            return builder.basicAuthentication(githubUsername, githubPassword).build();
-
+        if (isTokenFilled()) {
+            return builder.defaultHeader("Authorization", "token " + personalToken).build();
         }
-        LOGGER.warn("Anonymus user can request github api 60 times per hour only");
+
+        LOGGER.warn("Anonymus user has lower rate limit");
         return builder.build();
     }
 
-    private boolean isCredentialsFilled() {
-        return githubUsername != null && !githubUsername.isEmpty() && githubPassword != null && !githubPassword.isEmpty();
+    private boolean isTokenFilled() {
+        return personalToken != null && !personalToken.isEmpty();
     }
 }

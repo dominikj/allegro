@@ -1,20 +1,17 @@
 package pl.ale.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import pl.ale.dto.UserListDto;
+import org.springframework.web.bind.annotation.RestController;
+import pl.ale.dto.RepositoryListDto;
 import pl.ale.service.GithubService;
-
-import static pl.ale.constant.Constants.GITHUB_MAX_QUERY_SIZE;
 
 /**
  * Created by dominik on 01.01.22.
  */
-@Controller
+@RestController
 public class ApplicationController {
 
     private final GithubService githubService;
@@ -24,41 +21,13 @@ public class ApplicationController {
         this.githubService = githubService;
     }
 
-    @GetMapping("/")
-    public String searchUsers(@RequestParam(required = false) String query, Model model) {
-
-        if (query != null) {
-
-            String trimmedQuery = query.trim();
-
-            if (trimmedQuery.isEmpty() || trimmedQuery.length() > GITHUB_MAX_QUERY_SIZE) {
-                model.addAttribute("isEmptyOrTooLongQuery", true);
-
-            } else {
-                UserListDto usersList = githubService.searchUsers(trimmedQuery);
-
-                model.addAttribute("userList", usersList.getUsers());
-                model.addAttribute("isTooManyResults", usersList.isTooManyResults());
-            }
-        }
-        return "searchPage";
-    }
-
     @GetMapping("/get-repos/{user}")
-    public String getRepos(@PathVariable String user, @RequestParam boolean isOrganization, @RequestParam int page, Model
-            model) {
+    public RepositoryListDto getRepos(@PathVariable String user,
+                                      @RequestParam(required = false) Integer pageSize, @RequestParam(required = false) Integer page) {
 
-        if (user != null || !user.isEmpty()) {
+        int reposPerPage = pageSize == null ? 30 : pageSize;
+        int currentPage = page == null ? 1 : page;
 
-            if (isOrganization) {
-
-                model.addAttribute("repos", githubService.getRepositoriesForOrganization(user, page));
-
-            } else {
-                model.addAttribute("repos", githubService.getRepositoriesForPersonalUser(user, page));
-            }
-        }
-
-        return "reposListPage";
+        return githubService.getRepositories(user, reposPerPage, currentPage);
     }
 }
