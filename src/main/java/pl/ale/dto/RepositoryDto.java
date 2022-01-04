@@ -2,9 +2,6 @@ package pl.ale.dto;
 
 import java.util.Map;
 
-/**
- * Created by dominik on 02.01.22.
- */
 public class RepositoryDto {
 
     private String name;

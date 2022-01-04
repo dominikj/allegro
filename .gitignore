@@ -28,4 +28,3 @@ hs_err_pid*
 target/
 *.local
 
-application.properties

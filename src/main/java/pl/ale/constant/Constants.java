@@ -6,7 +6,7 @@ package pl.ale.constant;
 public interface Constants {
 
     int GITHUB_MAX_RESULTS_PER_PAGE = 100;
-    int GITHUB_DEFAULT_PAGE_SIZE = 30;
+    int GITHUB_DEFAULT_RESULTS_PER_PAGE = 30;
     int GTIHUB_DEFAULT_PAGE = 1;
     int MINIMAL_REPOS_PER_PAGE = 1;
 

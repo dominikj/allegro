@@ -2,9 +2,6 @@ package pl.ale.dto;
 
 import java.util.List;
 
-/**
- * Created by dominik on 02.01.22.
- */
 public class RepositoryListDto {
 
     private int currentPage;

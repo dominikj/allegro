@@ -10,9 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import pl.ale.service.GithubService;
 
-/**
- * Created by dominik on 01.01.22.
- */
 @Configuration
 @EnableCaching
 public class ApplicationConfiguration {

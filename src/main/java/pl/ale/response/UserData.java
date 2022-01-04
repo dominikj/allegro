@@ -3,9 +3,6 @@ package pl.ale.response;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import pl.ale.enums.UserType;
 
-/**
- * Created by dominik on 02.01.22.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserData {
 

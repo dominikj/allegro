@@ -10,9 +10,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * Created by dominik on 04.01.22.
- */
 @ControllerAdvice
 class ApplicationControllerAdvice {
 
@@ -21,6 +18,7 @@ class ApplicationControllerAdvice {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public Map clientExceptionHandler(HttpClientErrorException exception) {
 
+        // TODO: Now all exceptions regarding to communication with github service are "transformed" to HTTP 404.
         return Collections.singletonMap("message","Given user is not found");
     }
 }

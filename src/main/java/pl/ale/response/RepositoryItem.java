@@ -2,9 +2,6 @@ package pl.ale.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-/**
- * Created by dominik on 01.01.22.
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RepositoryItem {
 
