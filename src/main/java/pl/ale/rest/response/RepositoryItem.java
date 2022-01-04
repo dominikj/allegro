@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class RepositoryItem {
 
     private String name;
-    private int watchers_count;
+    private int stargazers_count;
     private String description;
 
     public String getDescription() {
@@ -28,11 +28,11 @@ public class RepositoryItem {
         this.name = name;
     }
 
-    public int getWatchers_count() {
-        return watchers_count;
+    public int getStargazers_count() {
+        return stargazers_count;
     }
 
-    public void setWatchers_count(int watchers_count) {
-        this.watchers_count = watchers_count;
+    public void setStargazers_count(int stargazers_count) {
+        this.stargazers_count = stargazers_count;
     }
 }

@@ -1,6 +1,7 @@
 package pl.ale.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,6 +16,8 @@ import pl.ale.rest.response.UserItem;
 import pl.ale.rest.response.UserList;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static pl.ale.constant.Constants.GITHUB_DEFAULT_SEARCH_RESULTS_PER_PAGE;
@@ -34,13 +37,13 @@ public class DefaultGithubService implements GithubService {
 
     @Override
     public RepositoryListDto getRepositoriesForPersonalUser(String username, int page) {
-        return getRepositories(username, false, page);
+        return getRepositoryList(username, false, page);
 
     }
 
     @Override
     public RepositoryListDto getRepositoriesForOrganization(String username, int page) {
-        return getRepositories(username, true, page);
+        return getRepositoryList(username, true, page);
     }
 
     @Override
@@ -56,13 +59,51 @@ public class DefaultGithubService implements GithubService {
         return userList;
     }
 
+    @Override
+    @Cacheable(value = "numberOfStars")
+    public int getTotalNumberOfStars(String username) {
+
+        UserData userData = getUserData(username);
+
+        int numberOfPages = calculateNumberOfPages(userData.getPublic_repos());
+
+        int totalStars = 0;
+
+        for (int page = 1; page <= numberOfPages; ++page) {
+            RepositoryItem[] repositories = getRepositories(username, UserType.Organization.equals(userData.getType()), page);
+
+            int sumOfStars = Arrays.stream(repositories).mapToInt(RepositoryItem::getStargazers_count).sum();
+
+            totalStars += sumOfStars;
+        }
+
+        return totalStars;
+    }
+
+    @Override
+    public Map<String, Long> getRepositoryLanguages(String username, String repository) {
+        return restTemplate.getForEntity(String.format(GET_REPO_LANGUAGES, username, repository), HashMap.class).getBody();
+    }
+
     private UserData getUserData(String username) {
 
         return restTemplate.getForEntity(String.format(GET_USER_DATA_URL, username), UserData.class).getBody();
 
     }
 
-    private RepositoryListDto getRepositories(String username, boolean isOrganization, int page) {
+    private RepositoryListDto getRepositoryList(String username, boolean isOrganization, int page) {
+
+        int totalNumberOfStars = getTotalNumberOfStars(username);
+
+        RepositoryItem[] repositories = getRepositories(username, isOrganization, page);
+
+        UserData userData = getUserData(username);
+
+        return buildRepositoryListDto(repositories, userData, page, totalNumberOfStars);
+
+    }
+
+    private RepositoryItem[] getRepositories(String username, boolean isOrganization, int page) {
 
         String url;
         if (isOrganization) {
@@ -75,23 +116,22 @@ public class DefaultGithubService implements GithubService {
 
         }
 
-        ResponseEntity<RepositoryItem[]> repositories = restTemplate.getForEntity(url, RepositoryItem[].class);
-
-        UserData userData = getUserData(username);
-
-        return buildRepositoryListDto(repositories.getBody(), userData, page);
-
+        return restTemplate.getForEntity(url, RepositoryItem[].class).getBody();
     }
 
-    private RepositoryListDto buildRepositoryListDto(RepositoryItem[] repositories, UserData userData, int page) {
+    private RepositoryListDto buildRepositoryListDto(RepositoryItem[] repositories, UserData userData, int page, int totalNumberOfStars) {
 
         RepositoryListDto repositoryList = new RepositoryListDto();
 
-        repositoryList.setRepositories(Arrays.stream(repositories).map(this::buildRepositoryDto).collect(Collectors.toList()));
+        repositoryList.setRepositories(Arrays.stream(repositories)
+                .map(repo -> buildRepositoryDto(repo, userData.getLogin()))
+                .collect(Collectors.toList()));
+
         repositoryList.setLogin(userData.getLogin());
         repositoryList.setOrganization(UserType.Organization.equals(userData.getType()));
         repositoryList.setCurrentPage(page);
         repositoryList.setNumberOfPages(calculateNumberOfPages(userData.getPublic_repos()));
+        repositoryList.setTotalNumberOfStars(totalNumberOfStars);
 
         return repositoryList;
 
@@ -112,14 +152,14 @@ public class DefaultGithubService implements GithubService {
         return dto;
     }
 
-    private RepositoryDto buildRepositoryDto(RepositoryItem item) {
+    private RepositoryDto buildRepositoryDto(RepositoryItem item, String username) {
 
         RepositoryDto dto = new RepositoryDto();
 
         dto.setDescription(item.getDescription());
         dto.setName(item.getName());
-        dto.setStars(item.getWatchers_count());
-
+        dto.setStars(item.getStargazers_count());
+        dto.setLanguages(getRepositoryLanguages(username, dto.getName()));
         return dto;
     }
 }

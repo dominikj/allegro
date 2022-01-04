@@ -13,6 +13,16 @@ public class RepositoryListDto {
     private String login;
     private boolean organization;
 
+    public int getTotalNumberOfStars() {
+        return totalNumberOfStars;
+    }
+
+    public void setTotalNumberOfStars(int totalNumberOfStars) {
+        this.totalNumberOfStars = totalNumberOfStars;
+    }
+
+    private int totalNumberOfStars;
+
     public String getLogin() {
         return login;
     }

@@ -3,7 +3,7 @@
 
 <div th:if="${not #lists.isEmpty(repos.repositories)}">
     <div>Repozytoria użytkownika: <b th:text="${repos.login}"></b> <br/> <a href="/">Wróć do wyszukiwarki >>></a></div>
-
+    <div th:text="|Całkowita liczba gwiazdek: ${repos.totalNumberOfStars}"></div>
     <div th:text="|Strona: ${repos.currentPage} z ${repos.numberOfPages}|"></div>
     <a th:if="${repos.currentPage > 1}" th:href="|/get-repos/${repos.login}?isOrganization=${repos.organization}&page=${repos.currentPage -1}|">Poprzednia strona</a>
     <a  th:if="${repos.currentPage != repos.numberOfPages}" th:href="|/get-repos/${repos.login}?isOrganization=${repos.organization}&page=${repos.currentPage +1}|"> Następna strona</a>
@@ -11,10 +11,12 @@
         <tr>
             <th>Nazwa (liczba gwiazdek)</th>
             <th>Opis</th>
+            <th>Język programowania : liczba bajtów kodu</th>
         </tr>
         <tr th:each="repo: ${repos.repositories}">
             <td th:text="|${repo.name} (${repo.stars})|">></td>
             <td><i th:text="${repo.description}"></i></td>
+            <td th:text="${repo.languages}"></td>
         </tr>
     </table>
 

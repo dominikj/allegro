@@ -19,6 +19,7 @@ public interface Constants {
 
         String SEARCH_USER_URL = "https://api.github.com/search/users?per_page=" + GITHUB_MAX_SEARCH_RESULTS_PER_PAGE + "&q=";
         String GET_USER_DATA_URL = "https://api.github.com/users/%s";
+        String GET_REPO_LANGUAGES = "https://api.github.com/repos/%s/%s/languages";
 
     }
 }
