@@ -18,4 +18,4 @@ Nazwa użytkownika jest obowiązkowa, natomiast parametry stronicowania opcjonal
 * Nie zauważyłem w API Github pola zwracającego sumę wszystkich gwiazdek we wszystkich repozytoriach danego użytkownika, może coś przeoczyłem. Dlatego też zliczam je ręcznie przechodząc po wszystkich repozytoriach danego użytkownika. Często jest to kilka stron wyników, bo github ogranicza liczę rekordów na jednej stronie do 100, więc uważam to za rozwiązanie mało wydajne. 
 * API Github rozróżnia użytkowników prywatnych i organizacje. I tak przykładowo zapytania: `api.github.com/orgs/elastic/repos` i `api.github.com/users/elastic/repos` zwracają różne wyniki. 
 * "Gwiazdki" są reprezentowane przez pola `stargazers_count` i `watchers_count`. Na ten moment wydaje się że zawsze mają identyczną wartość. 
-
+* Nie zmieściłem się z 7 dniowym terminem oddania gdyż nałożyły się dwie kwestie - święta oraz problemy sprzętowe z komputerem. 
