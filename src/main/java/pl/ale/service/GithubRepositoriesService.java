@@ -1,6 +1,7 @@
 package pl.ale.service;
 
 import pl.ale.dto.RepositoryListDto;
+import pl.ale.param.Pagination;
 
 /**
  * Service for obtaining github repos.
@@ -13,11 +14,11 @@ public interface GithubRepositoriesService {
      * - sum of stars for all repos
      * - code languages and code size for each repo
      * - description for each repo
+     *
      * @param username github username
-     * @param pageSize repos per page
-     * @param page demanded page
+     * @param pageable pagination
      * @return The list of repos is wrapped in {@link RepositoryListDto}
      */
-    RepositoryListDto getRepositories(String username, int pageSize, int page);
+    RepositoryListDto getRepositories(String username, Pagination pageable);
 
 }

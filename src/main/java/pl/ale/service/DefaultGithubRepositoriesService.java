@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.ale.dto.RepositoryDto;
 import pl.ale.dto.RepositoryListDto;
+import pl.ale.param.Pagination;
 import pl.ale.response.RepositoryItem;
 import pl.ale.response.UserData;
 
@@ -24,13 +25,14 @@ public class DefaultGithubRepositoriesService implements GithubRepositoriesServi
     }
 
     @Override
-    public RepositoryListDto getRepositories(String username, int pageSize, int page) {
+    public RepositoryListDto getRepositories(String username, Pagination pageable) {
 
         UserData userData = githubService.getUserData(username);
         int totalNumberOfStars = githubService.getTotalNumberOfStars(userData);
-        RepositoryItem[] repositories = githubService.getRepositories(userData, pageSize, page);
+        RepositoryItem[] repositories = githubService.getRepositories(userData, pageable);
 
-        return buildRepositoryListDto(repositories, userData, pageSize, page, totalNumberOfStars);
+        return buildRepositoryListDto(repositories, userData,
+                pageable.getPageSize(), pageable.getPageNumber(), totalNumberOfStars);
     }
 
     private RepositoryListDto buildRepositoryListDto(RepositoryItem[] repositories, UserData userData,

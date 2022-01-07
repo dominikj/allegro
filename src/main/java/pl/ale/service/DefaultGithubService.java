@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import pl.ale.enums.UserType;
+import pl.ale.param.Pagination;
 import pl.ale.response.RepositoryItem;
 import pl.ale.response.UserData;
 
@@ -37,7 +38,8 @@ public class DefaultGithubService implements GithubService {
         int totalStars = 0;
 
         for (int page = 1; page <= numberOfPages; ++page) {
-            RepositoryItem[] repositories = getRepositories(userData, GITHUB_MAX_RESULTS_PER_PAGE, page);
+
+            RepositoryItem[] repositories = getRepositories(userData, Pagination.of(page, GITHUB_MAX_RESULTS_PER_PAGE));
 
             int sumOfStars = Arrays.stream(repositories).mapToInt(RepositoryItem::getStargazers_count).sum();
 
@@ -60,16 +62,16 @@ public class DefaultGithubService implements GithubService {
     }
 
     @Override
-    public RepositoryItem[] getRepositories(UserData userData, int pageSize, int page) {
+    public RepositoryItem[] getRepositories(UserData userData, Pagination pageable) {
 
         String url;
         if (isOgranization(userData)) {
 
-            url = String.format(REPOS_ORG_URL, userData.getLogin(), pageSize, page);
+            url = String.format(REPOS_ORG_URL, userData.getLogin(), pageable.getPageSize(), pageable.getPageNumber());
 
         } else {
 
-            url = String.format(REPOS_PERSONAL_USER_URL, userData.getLogin(), pageSize, page);
+            url = String.format(REPOS_PERSONAL_USER_URL, userData.getLogin(), pageable.getPageSize(), pageable.getPageNumber());
         }
 
         return restTemplate.getForEntity(url, RepositoryItem[].class).getBody();
